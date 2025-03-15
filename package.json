@@ -1,0 +1,30 @@
+{
+  "name": "e-commerce-api",
+  "version": "1.0.0",
+  "description": "API yang dibangun untuk platform E-Commerce.",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "cross-env NODE_ENV=development nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MuhammadFarrel4148/E-Commerce-API.git"
+  },
+  "keywords": [],
+  "author": "Muhammad Farrel Putra Pambudi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MuhammadFarrel4148/E-Commerce-API/issues"
+  },
+  "homepage": "https://github.com/MuhammadFarrel4148/E-Commerce-API#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.13.0",
+    "nanoid": "^5.1.3",
+    "nodemon": "^3.1.9"
+  }
+}
