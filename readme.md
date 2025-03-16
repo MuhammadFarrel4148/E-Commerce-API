@@ -30,6 +30,14 @@ API yang dibangun untuk platform E-Commerce.
 }
 ```
 
+### Table CodeOTP
+```json
+{
+    "code": "string(5) PRIMARY KEY",
+    "email": "string(255)"
+}
+```
+
 ### Table Product
 ```json
 {
