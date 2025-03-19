@@ -68,6 +68,7 @@ API yang dibangun untuk platform E-Commerce.
 | POST        | /login                                      | melakukan login akun e-commerce                                    |
 | POST        | /forgotPassword                             | melakukan reset password dengan input email                        |
 | POST        | /inputotp                                   | melakukan reset password dengan input code OTP                     |
+| POST        | /changePassword                             | melakukan change password pada akun                                |
 | POST        | /logout                                     | melakukan logout akun e-commerce                                   |
 | POST        | /add/:idProduct                             | melakukan tambah produk ke dalam cart                              |
 | PUT         | /remove/:idProduct                          | melakukan remove produk pada cart                                  |

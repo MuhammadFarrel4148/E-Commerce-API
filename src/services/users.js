@@ -10,6 +10,47 @@ const generateToken = (user) => {
     return token;
 };
 
+const AccessValidation = async(request, response, next) => {
+    const authorization = request.headers.authorization;
+
+    try {
+        if(!authorization) {
+            return response.status(401).json({
+                status: 'fail',
+                message: 'Unauthorized'
+            });
+        };
+
+        const token = authorization.split(' ')[1];
+        const [isBlacklist] = await db.query(`SELECT * FROM blacklisttoken WHERE token = ?`, token);
+
+        if(isBlacklist.length > 0) {
+            return response.status(401).json({
+                status: 'fail',
+                message: 'Unauthorized'
+            });
+        };
+
+        const checkValidation = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(checkValidation) {
+            request.auth = { credentials: checkValidation };
+            return next();
+        };
+
+        return response.status(400).json({
+            status: 'fail',
+            message: 'input not valid, try again'
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            status: 'fail',
+            message: `Invalid access validation: ${error}`
+        });
+    };
+};
+
 const registerAccount = async(request, response) => {
     const { username, email, password } = request.body;
 
@@ -210,5 +251,102 @@ const forgotPasswordInputOTP = async(request, response) => {
     };
 };
 
-module.exports = { registerAccount, loginAccount, forgotPasswordSendEmail, forgotPasswordInputOTP };
+const changePassword = async(request, response) => {
+    const { password, newPassword } = request.body;
+
+    try {
+        if(!isValidPassword(password) || !isValidPassword(newPassword)) {
+            return response.status(400).json({
+                status: 'fail',
+                message: 'input not valid, try again'
+            });
+        };
+
+        const userId = request.auth.credentials.id;
+        const [existAccount] = await db.query(`SELECT * FROM users WHERE id_users = ?`, [userId]);
+
+        if(existAccount.length > 0) {
+            const matchPassword = await bcrypt.compare(password, existAccount[0].password);
+
+            if(matchPassword) {
+                const saltRounds = 10;
+                const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+                const [updatePassword] = await db.query(`UPDATE users SET password = ? WHERE id_users = ?`, [hashedPassword, userId]);
+
+                if(updatePassword.affectedRows === 1) {
+                    return response.status(201).json({
+                        status: 'success',
+                        message: 'password berhasil diubah'
+                    });
+                };
+            };
+        };
+
+        return response.status(401).json({
+            status: 'fail',
+            message: 'Unauthorized'
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            status: 'fail',
+            message: `Invalid change password: ${error}`
+        });
+    };
+};
+
+const logoutAccount = async(request, response) => {
+    const authorization = request.headers.authorization;
+
+    try {
+        if(!authorization) {
+            return response.status(401).json({
+                status: 'fail',
+                message: 'Unauthorized'
+            });
+        };
+
+        const token = authorization.split(' ')[1];
+        const [isBlacklist] = await db.query(`SELECT * FROM blacklisttoken WHERE token = ?`, token);
+
+        if(isBlacklist.length > 0) {
+            return response.status(401).json({
+                status: 'fail',
+                message: 'Unauthorized'
+            });
+        };
+
+        const checkValidation = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(checkValidation) {
+            const [blacklistToken] = await db.query(`INSERT INTO blacklisttoken(token) VALUES(?)`, [token]);
+
+            if(blacklistToken.affectedRows === 1) {
+                return response.status(201).json({
+                    status: 'success',
+                    message: 'akun berhasil logout'
+                });
+            };
+
+            return response.status(400).json({
+                status: 'fail',
+                message: 'input not valid, try again'
+            }); 
+        };
+
+        return response.status(400).json({
+            status: 'fail',
+            message: 'input not valid, try again'
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            status: 'fail',
+            message: `Invalid access validation: ${error}`
+        });
+    };
+};
+
+module.exports = { registerAccount, loginAccount, forgotPasswordSendEmail, forgotPasswordInputOTP, AccessValidation, changePassword, logoutAccount };
 
