@@ -38,6 +38,13 @@ API yang dibangun untuk platform E-Commerce.
 }
 ```
 
+### Table Blacklist Token
+```json
+{
+    "token": "string(255) PRIMARY KEY"
+}
+```
+
 ### Table Product
 ```json
 {
@@ -52,7 +59,7 @@ API yang dibangun untuk platform E-Commerce.
 ### Table Cart
 ```json
 {
-    "id_cart": "string(16) PRIMARY KEY",
+    "id": "string(16) PRIMARY KEY",
     "id_users": "string(16) FOREIGN KEY REFERENCE users(id_users)",
     "id_product": "string(16) FOREIGN KEY REFERENCE product(id_product)"
 }

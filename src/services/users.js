@@ -51,6 +51,10 @@ const AccessValidation = async(request, response, next) => {
     };
 };
 
+const AutomaticCodeOTP = async(request, response) => {
+
+};
+
 const registerAccount = async(request, response) => {
     const { username, email, password } = request.body;
 
