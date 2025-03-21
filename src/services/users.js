@@ -51,10 +51,6 @@ const AccessValidation = async(request, response, next) => {
     };
 };
 
-const AutomaticCodeOTP = async(request, response) => {
-
-};
-
 const registerAccount = async(request, response) => {
     const { username, email, password } = request.body;
 
@@ -191,7 +187,8 @@ const forgotPasswordSendEmail = async(request, response) => {
 
                 return response.status(201).json({
                     status: 'success',
-                    message: 'code OTP berhasil dikirim, cek email anda'
+                    message: 'code OTP berhasil dikirim, cek email anda',
+                    codeOTP: codeOTP
                 });
             };
 

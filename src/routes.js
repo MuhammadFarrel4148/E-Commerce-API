@@ -7,7 +7,7 @@ router.post('/register', registerAccount);
 router.post('/login', loginAccount);
 router.post('/sendemail', forgotPasswordSendEmail);
 router.post('/inputotp', forgotPasswordInputOTP);
-router.post('/changepassword', AccessValidation, changePassword);
+router.put('/changepassword', AccessValidation, changePassword);
 router.post('/logout', logoutAccount);
 
 module.exports = router;
