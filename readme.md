@@ -78,7 +78,7 @@ API yang dibangun untuk platform E-Commerce.
 | POST        | /changePassword                             | melakukan change password pada akun                                |
 | POST        | /logout                                     | melakukan logout akun e-commerce                                   |
 | POST        | /add/:idProduct                             | melakukan tambah produk ke dalam cart                              |
-| PUT         | /remove/:idProduct                          | melakukan remove produk pada cart                                  |
+| PUT         | /remove/:idCart                             | melakukan remove produk pada cart                                  |
 | GET         | /product/:idProduct?{title, description}    | melakukan view pada produk yang memiliki opsional query            |
 
 ## Penulis

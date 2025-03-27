@@ -79,4 +79,36 @@ const removeProduct = async(request, response) => {
     };
 };
 
-module.exports = { addProduct, removeProduct };
+const viewProduct = async(request, response) => {
+    const { title, description } = request.query;
+
+    try {
+        let sqlQuery = `SELECT title, description, cost, seller FROM product WHERE 1=1`;
+        let sqlParams = [];
+
+        if(title) {
+            sqlQuery += ` AND title LIKE ?`;
+            sqlParams.push(`%${title}%`);
+        };
+
+        if(description) {
+            sqlQuery += ` AND description LIKE ?`;
+            sqlParams.push(`%${description}%`);
+        };
+
+        const [result] = await db.query(sqlQuery, sqlParams);
+
+        return response.status(200).json({
+            status: 'success',
+            result: result
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            status: 'fail',
+            message: `Invalid view product: ${error}`
+        });
+    };
+};
+
+module.exports = { addProduct, removeProduct, viewProduct };
