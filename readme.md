@@ -80,6 +80,7 @@ API yang dibangun untuk platform E-Commerce.
 | POST        | /add/:idProduct                             | melakukan tambah produk ke dalam cart                              |
 | PUT         | /remove/:idCart                             | melakukan remove produk pada cart                                  |
 | GET         | /product/:idProduct?{title, description}    | melakukan view pada produk yang memiliki opsional query            |
+| POST        | /checkout                                   | melakukan payment kepada produk                                    |
 
 ## Penulis
 - **Muhammad Farrel Putra Pambudi**
