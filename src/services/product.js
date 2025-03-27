@@ -1,5 +1,6 @@
 const { nanoid } = require("nanoid");
 const db = require('../database');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const addProduct = async(request, response) => {
     const userId = request.auth.credentials.id;
@@ -111,4 +112,60 @@ const viewProduct = async(request, response) => {
     };
 };
 
-module.exports = { addProduct, removeProduct, viewProduct };
+const checkoutProduct = async(request, response) => {
+    const userId = request.auth.credentials.id;
+    const { token } = request.body;
+
+    let result = 0;
+
+    try {
+        if(!token) {
+            return response.status(400).json({
+                status: 'fail',
+                message: 'input card not valid, try again'
+            });
+        };
+
+        const [cartProducts] = await db.query(`SELECT * FROM cart WHERE id_users = ?`, [userId]);
+        const productId = cartProducts.map(item => item.id_product);
+        const [priceProduct] = await db.query(`SELECT * FROM product WHERE id_product IN (?)`, [productId]);
+    
+        const priceMap = {};
+        priceProduct.forEach(product => {
+            priceMap[product.id_product] = product.cost;
+        });
+
+        cartProducts.forEach(item => {
+            const price = priceMap[item.id_product];
+            result += price;
+        });
+
+        const charge = await stripe.charges.create({
+            amount: result,
+            currency: 'usd',
+            source: token.id,
+            description: 'Pembelian Produk'
+        });
+
+        return response.status(201).json({
+            status: 'success',
+            result: {
+                id: charge.id,
+                amount: charge.amount,
+                balance_transaction: charge.balance_transaction,
+                currency: charge.currency,
+                description: charge.description,
+                message: charge.outcome.seller_message,
+                receipt_url: charge.receipt_url
+            }
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            status: 'fail',
+            message: `Invalid checkout product: ${error}`
+        });
+    };  
+};
+
+module.exports = { addProduct, removeProduct, viewProduct, checkoutProduct };

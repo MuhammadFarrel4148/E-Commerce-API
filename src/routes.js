@@ -1,6 +1,6 @@
 const express = require('express');
 const { registerAccount, loginAccount, forgotPasswordSendEmail, forgotPasswordInputOTP, AccessValidation, changePassword, logoutAccount } = require('./services/users');
-const { addProduct, removeProduct, viewProduct } = require('./services/product');
+const { addProduct, removeProduct, viewProduct, checkoutProduct } = require('./services/product');
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ router.post('/logout', logoutAccount);
 router.post('/add/:idProduct', AccessValidation, addProduct);
 router.delete('/remove/:idCart', AccessValidation, removeProduct);
 router.get('/product', AccessValidation, viewProduct);
+router.post('/checkout', AccessValidation, checkoutProduct);
 
 module.exports = router;
